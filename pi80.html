@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="includes/turbopi.css"/>
+	<link rel="stylesheet" href="includes/codemirror/codemirror.css"/>
+	<link href="includes/jquery-ui.css" rel="stylesheet" type="text/css"/>
+	<script src="includes/jquery.min.js"></script>
+	<script src="includes/graphicslib.js"></script>
+	<script src="includes/userlib.js"></script>
+	<script src="includes/jspreprocess.js"></script>
+	<script src="includes/jquery-ui.min.js"></script>
+	<script src="includes/codemirror/codemirror.js"></script>
+	<script src="includes/codemirror/lua.js"></script>
+</head>
+
+<body>
+
+<div id="tabs-min">
+	<ul>
+		<li><a href="#code">Work</a></li>
+		<li><a href="#graphics">600p</a></li>
+	</ul>
+
+
+	<div id="code">
+		<div class="work_space">
+			<div class="col1">
+				<textarea id="code_editor">
+width(5)
+circle(100,100,50,"red")
+line(0,0,100,100,"blue")
+writeln("hi")
+for i=1,10 do
+ writeln(i*i)
+end
+				
+				</textarea>
+				<br/>
+				<div id="run_button">
+					<button onclick="run('small');">Run</button>
+					<button onclick="run('large');">Run 600p</button>
+				</div>
+			</div>
+
+			<div class="col2">
+				<canvas id="pmode_small" width="500" height="400"></canvas>
+				<div id="text_small" width="500" height="400"></div>
+			</div>
+		</div>
+	</div>
+	
+	<div id="graphics">
+		<canvas id="pmode_large" width="800" height="600"></canvas>
+		<div id="text_large" width="800" height="600"></div>
+	</div>
+</div>
+
+<div id="status"></div>
+<div id="dump"></div>
+<div id="text"></div>
+
+
+
+
+<script>
+
+var canvas; // = document.getElementById("pmode_small");
+var context; // = canvas.getContext("2d");
+var canvas_width, canvas_height;
+var stroke_width;
+var fps_rate = 20;
+var myCodeMirror = CodeMirror.fromTextArea(code_editor,{lineNumbers: true});
+var start_time;
+var stop_request = false;
+var whilst_color = 'no';
+
+(function() {
+    var lastTime = 0;
+    var vendors = ['ms', 'moz', 'webkit', 'o'];
+    for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+        window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
+        window.cancelAnimationFrame = window[vendors[x]+'CancelAnimationFrame']
+                                   || window[vendors[x]+'CancelRequestAnimationFrame'];
+    }
+ 
+    if (!window.requestAnimationFrame)
+        window.requestAnimationFrame = function(callback, element) {
+            var currTime = new Date().getTime();
+            var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+            var id = window.setTimeout(function() { callback(currTime + timeToCall); },
+              timeToCall);
+            lastTime = currTime + timeToCall;
+            return id;
+        };
+ 
+    if (!window.cancelAnimationFrame)
+        window.cancelAnimationFrame = function(id) {
+            clearTimeout(id);
+        };
+}());
+
+$(document).ready(function() {
+    $("#tabs-min").tabs();
+    $('#tabs-min').tabs({selected: 'code'});
+  });
+  
+  
+
+function run(where)
+{
+	//$('#run_button').html('<button onclick=\'stop_run();\'>Stop</button>');
+	init_canvas(where);
+	code= myCodeMirror.getValue();
+	
+	code = js_preprocess(code);
+	console.log(code);
+	code = '<script>' + code +'</sc' +'ript>';
+	
+	$('#dump').html(code);
+	
+	if (where == 'large')
+		$('#tabs-min').tabs({selected: 'graphics'});
+	
+}
+
+function wait_for_fps()
+{
+	var now = new Date().getTime();
+	if (now - start_time < fps_rate)
+		requestAnimationFrame(wait_for_fps);
+	else 
+		{
+			if (whilst_color != 'no')
+				{
+					cls(whilst_color);
+				}
+			core_whilst();
+			
+		}
+}
+
+function run_whilst()
+{
+	start_time = new Date().getTime();
+	wait_for_fps();
+}
+
+
+function init_canvas(where)
+{
+	if (where == 'small')
+		{
+			canvas = document.getElementById("pmode_small");
+			$('#text_small').html('');
+			canvas_width = 500;
+			canvas_height = 400;
+			context = canvas.getContext("2d");
+		}
+	else
+		{
+			canvas = document.getElementById("pmode_large");
+			$('#text_large').html('');
+			canvas_width = 800;
+			canvas_height = 600;
+			context = canvas.getContext("2d");
+		}
+}
+
+
+function stop_run()
+{
+	stop_request = true;
+}
+
+
+
+
+function frames_per_second(n)
+{
+	fps_rate = 1000/n;
+}
+
+
+</script>
+
+
+</body>
+</html>
