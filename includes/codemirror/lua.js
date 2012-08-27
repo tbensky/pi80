@@ -15,6 +15,7 @@ CodeMirror.defineMode("lua", function(config, parserConfig) {
  
   // long list of standard functions from lua manual
   var builtins = wordRE([
+  	"write","writeln",
     "_G","_VERSION","assert","collectgarbage","dofile","error","getfenv","getmetatable","ipairs","load",
     "loadfile","loadstring","module","next","pairs","pcall","print","rawequal","rawget","rawset","require",
     "select","setfenv","setmetatable","tonumber","tostring","type","unpack","xpcall",
@@ -48,7 +49,8 @@ CodeMirror.defineMode("lua", function(config, parserConfig) {
   ]);
   var keywords = wordRE(["and","break","elseif","false","nil","not","or","return",
 			 "true","function", "end", "if", "then", "else", "do", 
-			 "while", "repeat", "until", "for", "in", "local" ]);
+			 "while", "repeat", "until", "for", "in", "local",
+			 "forever","animate"]);
 
   var indentTokens = wordRE(["function", "if","repeat","do", "\\(", "{"]);
   var dedentTokens = wordRE(["end", "until", "\\)", "}"]);
@@ -63,7 +65,7 @@ CodeMirror.defineMode("lua", function(config, parserConfig) {
 
   function normal(stream, state) {
     var ch = stream.next();
-    if (ch == "-" && stream.eat("-")) {
+    if (ch == "/" && stream.eat("/")) {
       if (stream.eat("["))
         return (state.cur = bracketed(readBracket(stream), "comment"))(stream, state);
       stream.skipToEnd();

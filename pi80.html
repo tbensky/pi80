@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<link rel="stylesheet" type="text/css" href="includes/turbopi.css"/>
+	<link rel="stylesheet" type="text/css" href="includes/pi80.css"/>
 	<link rel="stylesheet" href="includes/codemirror/codemirror.css"/>
 	<link href="includes/jquery-ui.css" rel="stylesheet" type="text/css"/>
 	<script src="includes/jquery.min.js"></script>
@@ -26,16 +26,8 @@
 	<div id="code">
 		<div class="work_space">
 			<div class="col1">
-				<textarea id="code_editor">
-width(5)
-circle(100,100,50,"red")
-line(0,0,100,100,"blue")
-writeln("hi")
-for i=1,10 do
- writeln(i*i)
-end
-				
-				</textarea>
+<textarea id="code_editor">
+</textarea>
 				<br/>
 				<div id="run_button">
 					<button onclick="run('small');">Run</button>
@@ -56,11 +48,8 @@ end
 	</div>
 </div>
 
-<div id="status"></div>
+
 <div id="dump"></div>
-<div id="text"></div>
-
-
 
 
 <script>
@@ -69,11 +58,16 @@ var canvas; // = document.getElementById("pmode_small");
 var context; // = canvas.getContext("2d");
 var canvas_width, canvas_height;
 var stroke_width;
+var __pi80_text_output = '#text_small';
+var __pi80_lineinput_status = 0; //0=not active, 1=waiting, 2=input ready
+var __pi80_lineinput_data = '';
+var __pi80_lineinput_count = 0;
+var __pi80_stop_request = false;
 var fps_rate = 20;
 var myCodeMirror = CodeMirror.fromTextArea(code_editor,{lineNumbers: true});
 var start_time;
 var stop_request = false;
-var whilst_color = 'no';
+var animate_color = 'black';
 
 (function() {
     var lastTime = 0;
@@ -110,18 +104,20 @@ $(document).ready(function() {
 function run(where)
 {
 	//$('#run_button').html('<button onclick=\'stop_run();\'>Stop</button>');
+	__pi80_text_output = '#text_'+where;
 	init_canvas(where);
-	code= myCodeMirror.getValue();
+	code= myCodeMirror.getValue() + '\n';
 	
 	code = js_preprocess(code);
-	console.log(code);
+	
 	code = '<script>' + code +'</sc' +'ript>';
+	console.log(code);
 	
 	$('#dump').html(code);
 	
 	if (where == 'large')
 		$('#tabs-min').tabs({selected: 'graphics'});
-	
+		
 }
 
 function wait_for_fps()
@@ -131,16 +127,16 @@ function wait_for_fps()
 		requestAnimationFrame(wait_for_fps);
 	else 
 		{
-			if (whilst_color != 'no')
+			if (animate_color != 'no')
 				{
-					cls(whilst_color);
+					cls(animate_color);
 				}
-			core_whilst();
+			core_animate();
 			
 		}
 }
 
-function run_whilst()
+function run_animate()
 {
 	start_time = new Date().getTime();
 	wait_for_fps();
@@ -180,10 +176,194 @@ function frames_per_second(n)
 {
 	fps_rate = 1000/n;
 }
-
-
 </script>
 
+
+<h1>Examples</h1>
+
+<div id="example_links">
+</div>
+
+<div id="examples">
+
+<div id="example01">
+//display 'hello world' on the screen
+writeln("hello world")
+</div>
+
+<div id="example02">
+//using a for loop
+for i=1,10 do
+ writeln(i+' '+i*i)
+end
+</div>
+
+<div id="example03">
+//plot some concentric circles
+width(2)
+for i=1,200,5 do
+ circle(250,200,i,"green")
+end
+</div>
+
+<div id="example04">
+//let it snow (plotting points)
+cls('blue')
+for i=1,1000 do
+ x=rndinteger(0,500)
+ y=rndinteger(0,400)
+ point(x,y,"white")
+end
+</div>
+
+<div id="example05">
+//plot a bunch of random lines
+width(1)
+cls('blue')
+for i=1,1000 do
+ x1=rndinteger(0,500)
+ y1=rndinteger(0,400)
+ x2=rndinteger(0,500)
+ y2=rndinteger(0,400)
+ line(x1,y1,x2,y2,"white")
+end
+</div>
+
+<div id="example06">
+//read text from the keyboard
+name=input('What is your name?')
+writeln('Hi '+name);
+</div>
+
+<div id="example07">
+//the classic guess my number game
+num=rndinteger(1,100)
+writeln('I am thinking of a number between 1 and 100.')
+guess=0
+while guess != num do
+ guess=input('what is your guess?')
+ if guess < num then
+  writeln('Your guess is too low.')
+ end
+ 
+ if guess > num then
+  writeln('Your guess it too high.')
+ end
+end
+</div>
+
+<div id="example08">
+//using a while loop
+i=0
+writeln("I'll count to 100 by twos...")
+while i <= 100 do
+ writeln(i)
+ i=i+2
+end
+</div>
+
+<div id="example09">
+//read text from the keyboard
+write('What is your name? ')
+forever do
+	x=lineinput()
+	if x <> false then
+		writeln('Hi '+x);
+	end
+end
+</div>
+
+<div id="example10">
+//guess my number (2)
+num=rndinteger(1,100)
+writeln('I am thinking of a number between 1 and 100.')
+write('What is your guess?')
+forever do
+	guess = lineinput()
+	if guess <> false then
+		 if guess < num then
+		  writeln('Your guess is too low.')
+		 end
+		 if guess > num then
+		  writeln('Your guess it too high.')
+		 end
+		 
+		 if guess == num then
+		  writeln('** you guessed it. Nice job **')
+		  stop()
+		 end
+		 write('Try again:')
+ 	end
+end
+</div>
+
+<div id="example11">
+//bouncing ball
+cls('black')
+x=250
+y=200
+vx=5
+vy=5
+bounces=0
+while bounces<100 animate
+ circle(x,y,5,"red")
+ x=x+vx
+ y=y+vy
+ if x > 500 and vx > 0 then
+  vx = -vx
+  bounces++
+ end
+ if x < 0 and vx < 0 then
+  vx = -vx
+   bounces++
+ end
+ if y > 400 and vy > 0 then
+  vy = -vy
+	bounces++
+ end
+ if y < 0 and vy < 0 then
+  vy = -vy
+   bounces++
+ end
+end
+</div>
+
+
+
+<script>
+function load_example(n)
+{
+	code = $('#example'+n).text();
+	myCodeMirror.setValue($.trim(code));
+	myCodeMirror.refresh();
+
+}
+
+
+ex_done = false;
+i=1;
+while(ex_done == false)
+{
+	if (i < 10)
+		n = '0'+i;
+	else n = i;
+	id  = '#example'+n;
+	if ($(id).length == 0)
+		ex_done = true;
+	else
+		{	
+			code = $.trim($(id).text());
+			if (code.substr(0,2) == '//')
+				{
+					a = code.split('\n');
+					link = a[0].substr(2);
+					$('#example_links').html($('#example_links').html() + '<a href="javascript:void(0);" onClick="load_example(\''+n+'\');">'+link+'</a><br/>');
+				}
+		}
+	i=i+1;
+}
+
+</script>
 
 </body>
 </html>
