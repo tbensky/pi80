@@ -124,6 +124,7 @@ h3 {
 #tabs-min {
 	background: transparent;
 	border: none;
+	height: 450px;
 }
 
 #tabs-min .ui-widget-header {
