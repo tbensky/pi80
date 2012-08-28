@@ -32,19 +32,20 @@
 				<div id="run_button">
 					<button onclick="run('small');">Run</button>
 					<button onclick="run('large');">Run 600p</button>
+					<button onclick="stop_run();">Stop</button>
 				</div>
 			</div>
 
 			<div class="col2">
-				<canvas id="pmode_small" width="500" height="400"></canvas>
-				<div id="text_small" width="500" height="400"></div>
+				<canvas id="pmode_small" width="500" height="400" tabindex=1></canvas>
+				<div id="text_small" width="500" height="400"  tabindex=1></div>
 			</div>
 		</div>
 	</div>
 	
 	<div id="graphics">
 		<canvas id="pmode_large" width="800" height="600"></canvas>
-		<div id="text_large" width="800" height="600"></div>
+		<div id="text_large" width="800" height="600" tabindex=2></div>
 	</div>
 </div>
 
@@ -63,10 +64,11 @@ var __pi80_lineinput_status = 0; //0=not active, 1=waiting, 2=input ready
 var __pi80_lineinput_data = '';
 var __pi80_lineinput_count = 0;
 var __pi80_stop_request = false;
+var __pi80_keypress = false;
 var fps_rate = 20;
 var myCodeMirror = CodeMirror.fromTextArea(code_editor,{lineNumbers: true});
 var start_time;
-var stop_request = false;
+var __pi80_stop_request = false;
 var animate_color = 'black';
 
 (function() {
@@ -99,12 +101,15 @@ $(document).ready(function() {
     $('#tabs-min').tabs({selected: 'code'});
   });
   
-  
+$('#text_small').bind('keydown',incoming_key);
+$('#text_large').bind('keydown',incoming_key);
+
 
 function run(where)
 {
 	//$('#run_button').html('<button onclick=\'stop_run();\'>Stop</button>');
 	__pi80_text_output = '#text_'+where;
+	__pi80_stop_request = false;
 	init_canvas(where);
 	code= myCodeMirror.getValue() + '\n';
 	
@@ -152,6 +157,7 @@ function init_canvas(where)
 			canvas_width = 500;
 			canvas_height = 400;
 			context = canvas.getContext("2d");
+			context.clearRect(0,0,canvas_width,canvas_height);
 		}
 	else
 		{
@@ -160,22 +166,30 @@ function init_canvas(where)
 			canvas_width = 800;
 			canvas_height = 600;
 			context = canvas.getContext("2d");
+			context.clearRect(0,0,canvas_width,canvas_height);
 		}
 }
 
 
 function stop_run()
 {
-	stop_request = true;
+	__pi80_stop_request = true;
+	cancelAnimationFrame();
 }
 
 
 
 
-function frames_per_second(n)
+function rate(n)
 {
 	fps_rate = 1000/n;
 }
+
+function incoming_key(event)
+{
+	__pi80_keypress = event.keyCode;
+}
+
 </script>
 
 
@@ -306,7 +320,7 @@ vx=5
 vy=5
 bounces=0
 while bounces<100 animate
- circle(x,y,5,"red")
+ fillcircle(x,y,10,"red","blue")
  x=x+vx
  y=y+vy
  if x > 500 and vx > 0 then
@@ -328,13 +342,81 @@ while bounces<100 animate
 end
 </div>
 
+<div id="example12">
+//random circles
+for i=1,100 do
+ x=rndinteger(0,500)
+ y=rndinteger(0,400)
+ r=rndinteger(10,100)
+ circle(x,y,r,"red")
+end
+</div>
+
+<div id="example13">
+//getting key presses (move box using WASZ keys)
+x=250
+y=200
+forever do
+  rectangle(x,y,x+10,y+10,'red')
+  key = inkey()
+ if key <> false then
+    cls('black')
+    if key == 65 then x=x-5 end
+    if key == 83 then x=x+5 end
+    if key == 87 then y=y-5 end
+    if key == 90 then y=y+5 end
+    writeln(key)
+ end
+end
+</div>
+
+<div id="example14">
+//shoot the alien video game
+//be sure to click in the graphics windows
+//to give it the focus.  [SpaceBar] fires
+x=0
+y=10
+bx = 250
+score = 0
+fire = false
+while true animate
+ width(1)
+ rectangle(x,y,x+30,y+15,"red")
+ width(2)
+ line(bx,390,bx,400,"green")
+ line(bx-5,400,bx+5,"green")
+ printat(400,350,'score='+score,14,"red")
+  x=x+5
+  if (x > 500) then 
+  	x = 0 
+  	y = rndinteger(0,300)
+  end
+  if bx > x and bx < x+30 and by > y and by < y+15 then
+   score=score+10
+   x = 0
+  end
+  key = inkey()
+  if (key == 32) then 
+  	fire = true 
+  	by = 400
+  end
+  
+  if fire == true then
+  	line(bx,by,bx,by+10,"yellow")
+  	by = by-10
+  end
+  
+   
+end
+</div>
+
 
 
 <script>
 function load_example(n)
 {
 	code = $('#example'+n).text();
-	myCodeMirror.setValue($.trim(code));
+	myCodeMirror.setValue($.trim(code) + '\n\n');
 	myCodeMirror.refresh();
 
 }

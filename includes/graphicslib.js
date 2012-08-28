@@ -6,6 +6,17 @@ function circle(x,y,radius,color)
 	context.stroke();
 }
 
+function fillcircle(x,y,radius,color,fillcolor)
+{
+	context.beginPath();
+	context.arc(x,y,radius,0,2.0 * Math.PI,false);
+	context.strokeStyle = color;
+	
+	context.fillStyle = fillcolor;
+	context.fill();
+	context.stroke();
+}
+
 function line(x1,y1,x2,y2,color)
 {
 	context.beginPath();
@@ -13,7 +24,14 @@ function line(x1,y1,x2,y2,color)
 	context.lineTo(x2,y2);
 	context.strokeStyle = color;
 	context.stroke();
+}
 
+function rectangle(x1,y1,x2,y2,color)
+{
+	context.beginPath();
+	context.rect(x1,y1,x2-x1,y2-y1);
+	context.strokeStyle = color;
+	context.stroke();
 }
 
 function point(x,y,color)
@@ -27,6 +45,14 @@ function cls(color)
 {
 	context.fillStyle = color;
 	context.fillRect(0,0,canvas_width,canvas_height);
+	context.stroke();
+}
+
+function printat(x,y,str,pt_size,color)
+{
+	context.font = pt_size+"pt Calibri";
+    context.fillStyle = color;
+    context.fillText(str, x,y);
 }
 
 function whilstcls(color)

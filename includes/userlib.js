@@ -68,3 +68,12 @@ function stop()
 {
 	__pi80_stop_request = true;
 }
+
+function inkey()
+{	
+	r = __pi80_keypress;
+	if (r == false)
+		return(new Boolean(false));
+	__pi80_keypress = false;
+	return(r);
+}

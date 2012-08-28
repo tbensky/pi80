@@ -154,11 +154,12 @@ function js_preprocess(code_in)
 								for_end = code_in.substr(for_last_start,i-for_last_start);
 							if (in_for_limits == 4)
 								for_step = code_in.substr(for_last_start,i-for_last_start);
-							if (for_start < for_end)
+							if (parseFloat(for_start) < parseFloat(for_end))
 								{
 									if (for_step == '')
 										for_step = 1;
-									code_out += '('+for_variable+'='+for_start+';'+for_variable+'<='+for_end+';'+for_variable + '+=' + for_step + ')\n{\n';
+									var for_line = '('+for_variable+'='+for_start+';'+for_variable+'<='+for_end+';'+for_variable + '+=' + for_step + ')\n{\n';
+									code_out += for_line;
 								}
 							for_variable = for_start = for_end = for_step = '';
 							in_for_limits = 0;
@@ -187,7 +188,7 @@ function js_preprocess(code_in)
 					if (look_right(code_in,i,"end") && in_body_of.last() == 'animate')
 						{
 							in_body_of.pop();
-							code_out += '\n if ('+animate_cond+') { run_animate(); }\n}\ncore_animate();\n\n';
+							code_out += '\n if (('+animate_cond+') && __pi80_stop_request == false) { run_animate(); }\n}\ncore_animate();\n\n';
 							i += ws_length("end");
 						}
 						
