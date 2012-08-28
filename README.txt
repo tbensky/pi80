@@ -160,7 +160,7 @@ end
 which will enter a while loop whose condition should keep things running
 for a while. The loop is browser-safe. The 'animate' keyword (instead of
 'do') will force the loop to try an execute 60 times per second, and to
-clear the output area after each.
+clear the output area after each loop interation.
 
 if-statement
 ------------
@@ -177,14 +177,14 @@ Keyboard Input
 --------------
 Interacting with the keyboard can be done as follows:
 
-key=inkey()
+key = inkey()
 -----------
 
 Looks if a key has been pressed.  Returns false if not.  You will have
 to enter a long term loop to make this function useful, like this
 
 forever do
- key=inkey()
+ key = inkey()
  if key <> false then
   writeln(key)
  end
@@ -193,20 +193,20 @@ end
 which will print the keycodes as they are typed. Be sure to click in the output
 window to give it focus.
 
-str=input(prompt)
+str = input(prompt)
 -----------------
 
 This will bring up Javascript's annoying prompt window, but will return
 the string typed by the user.
 
-str=lineinput()
+str = lineinput()
 ---------------
 Works more like inkey() in that is returns false unless a complete line
 has a been typed. Again a long-term loop is needed for this, like
 
 write('What is your name? ')
 forever do
-	x=lineinput()
+	x = lineinput()
 	if x <> false then
 		writeln('Hi '+x);
 	end
