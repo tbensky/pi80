@@ -3,15 +3,16 @@ pi80: a small browser-based programming language and environment.
 Usage
 -----
 From your html5 compliant browser, open the file called pi80.html found
-in this packaage.  You will be greeted with a text-editor on the left and
-output screen on the right.
+in this packaage.  You will be greeted with a text-editor on the left
+and output screen on the right.
 
 Thanks
 ------
-Thanks to CodeMirror (codemirror.net) for the superb in-browser text-editor. Thanks
-to jquery and its UI components for making the browser interactions easy. All files
-from these fine projects have been included in pi80's package to make it self-contained,
-without requiring an internet connection.
+Thanks to CodeMirror (codemirror.net) for the superb in-browser
+text-editor. Thanks to jquery and its UI components for making the
+browser interactions easy. All files from these fine projects have been
+included in pi80's package to make it self-contained, without requiring
+an internet connection.
 
 Quick Start
 -----------
@@ -19,8 +20,8 @@ In the code editor type:
 
 writeln('hello there') 
 
-then click the "Run" button. You should see the text 'hello there' appear in the
-output window. Now try:
+then click the "Run" button. You should see the text 'hello there'
+appear in the output window. Now try:
 
 for i=1,10,2 do
  writeln('i='+i)
@@ -49,9 +50,9 @@ while x < 500 animate
  x=x+10
 end
 
-More examples can be found by scrolling down and selecting
-an example.  Clicking on an example will auto-insert code into the editor,
-which you may then run, edit, modify, etc.
+More examples can be found by scrolling down and selecting an example. 
+Clicking on an example will auto-insert code into the editor, which you
+may then run, edit, modify, etc.
 
 pi80
 ----
@@ -101,8 +102,8 @@ for i=1,10 do
 	writeln(i) 
 end
 
-but keep in mind that underneath it all, is simply Javascript. Here is a language
-description. 
+but keep in mind that underneath it all, is simply Javascript. Here is a
+language description.
 
 Screen output
 -------------
@@ -136,17 +137,19 @@ for var=start,end[,step] do
 ...
 end
 
-Javascript is a strange single-threaded language that must keep moving forward or the whole
-browser will lock up. Remember to go easy with the while and for loops.  For animation
-or keeping a program going for a while (or forever), we offer a few special kinds of loops.
+Javascript is a strange single-threaded language that must keep moving
+forward or the whole browser will lock up. Remember to go easy with the
+while and for loops.  For animation or keeping a program going for a
+while (or forever), we offer a few special kinds of loops.
 
 
 forever do
 ...
 end
 
-is an endless loop that will keep executing the included statements forever, in a way that
-won't lock up your browser (technical way: using either setTimeout or requestAnimationFrame).
+is an endless loop that will keep executing the included statements
+forever, in a way that won't lock up your browser (technical way: using
+either setTimeout or requestAnimationFrame).
 
 We also have
 
@@ -154,9 +157,10 @@ while condition animate
 ...
 end
 
-which will enter a while loop whose condition should keep things running for a while. The loop is 
-browser-safe. The 'animate' keyword (instead of 'do') will force the loop to try an execute 60 times
-per second, and to clear the output area after each.
+which will enter a while loop whose condition should keep things running
+for a while. The loop is browser-safe. The 'animate' keyword (instead of
+'do') will force the loop to try an execute 60 times per second, and to
+clear the output area after each.
 
 if-statement
 ------------
@@ -176,8 +180,8 @@ Interacting with the keyboard can be done as follows:
 key=inkey()
 -----------
 
-Looks if a key has been pressed.  Returns false if not.  You will have to enter a long
-term loop to make this function useful, like this
+Looks if a key has been pressed.  Returns false if not.  You will have
+to enter a long term loop to make this function useful, like this
 
 forever do
  key=inkey()
@@ -192,13 +196,13 @@ window to give it focus.
 str=input(prompt)
 -----------------
 
-This will bring up Javascript's annoying prompt window, but will return the string typed
-by the user.
+This will bring up Javascript's annoying prompt window, but will return
+the string typed by the user.
 
 str=lineinput()
 ---------------
-Works more like inkey() in that is returns false unless a complete line has a been typed. Again
-a long-term loop is needed for this, liek
+Works more like inkey() in that is returns false unless a complete line
+has a been typed. Again a long-term loop is needed for this, like
 
 write('What is your name? ')
 forever do
